@@ -1,0 +1,44 @@
+# Mistral
+project.properties
+buildnum.properties
+MistralServerReleaseInfo.java
+MistralClientReleaseInfo.java
+classes/
+build/
+ear/
+war/
+bin/
+
+#java specific
+*.class
+*.jar
+ 
+#eclipse
+.settings/
+.externalToolBuilders/
+.classpath
+.project
+mistral-client/sample_config/.settings/
+mistral-server/sample_config/.settings/
+ 
+#myeclipse
+.mymetadata
+ 
+#netbeans ignore personal stuff
+nbproject/private/
+ 
+# maven
+target/
+ 
+# generic files to ignore
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.bak
+*.orig
+
+# R files
+.Rproj.user
+.Rhistory
