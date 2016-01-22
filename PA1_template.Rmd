@@ -8,18 +8,95 @@ output:
 
 ## Loading and preprocessing the data
 
+```{r load_data, echo=TRUE}
 
+library(data.table)
+library(ggplot2)
 
+df <- read.csv('./activity.csv')
+DT <- data.table(df)
+summary(DT)
+str(DT)
+
+```
 ## What is mean total number of steps taken per day?
+Total steps by day
+```{r, echo=TRUE}
+DT[, sum(steps), by=date]$V1
+```
 
+Mean and median of steps per day
+```{r mean_steps, echo=TRUE}
 
+DT[, list(as.double(median(steps)), mean(steps)), by=date]
+
+```
 
 ## What is the average daily activity pattern?
 
 
+Histrogram of steps by day
+```{r hist_steps, echo=TRUE}
+
+hist(x=DT[, sum(steps), by=date]$V1, xlab = "Steps by date", main = "Histogram fo Steps by Date")
+
+
+```
+
+Activity pattern
+
+```{r plot_pattern, echo=TRUE}
+
+plot(DT[, mean(steps, na.rm = TRUE), by=date]$V1, ylab = "Average steps", 
+     xlab = "Day", main = "Average steps per day plot", type = "l")
+
+```
+
+Interval with maximum steps
+```{r max_interval, echo=TRUE}
+DT[steps == max(DT$steps),interval]
+
+```
 
 ## Imputing missing values
 
+Number of missing values 
+```{r NA_qty}
+# 1 number of NAs
+DT[is.na(steps),.N]
+```
 
+Removing NA values
+```{r del_NA, echo=TRUE}
+DT2 <- DT[!is.na(steps)]
+
+```
+
+
+Histograms, mean and median without missing values
+```{r hist_without_NA, echo=TRUE}
+# histogram, mean and median without missing values
+hist(x=DT2[, sum(steps), by=date]$V1, xlab = "Steps by date", main = "Histogram fo Steps by Date whitout missing values")
+
+DT2[, list(as.double(median(steps)), mean(steps)), by=date]
+
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+Create a factor column with levels; weekend and weekday
+Note that compare day names in spanish due to my computer configuration
+```{r typeday_column, echo=TRUE}
+DT2[, day.type := "weekday"]
+DT2[weekdays(as.Date(date)) %in% c("sabado", "domingo"), day.type := "weekend"]
+DT2$day.type <- factor(DT2$day.type)
+
+```
+
+Plotting comparing setps patterns between weekday and weekend
+```{r plot_by_typeday, echo=TRUE}
+par(mfrow=c(2,1))
+plot(DT2[day.type == "weekend", mean(steps), by = interval], type="l", main="Average steps by interval in weekend", ylab="average steps")
+plot(DT2[day.type == "weekday", mean(steps), by = interval], type="l", main="Average steps by interval in weekday", ylab="average steps")
+
+```
